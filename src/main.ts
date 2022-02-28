@@ -2,7 +2,6 @@ import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
 import { ValidationPipe } from '@nestjs/common'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
-import { UserEntity } from './user/entities/user.entity'
 
 async function bootstrap() {
     const PORT = process.env.PORT || 3000
@@ -13,6 +12,7 @@ async function bootstrap() {
         .setDescription("Документация REST API")
         .setVersion("1.0.0")
         .addTag("Om")
+        .addBearerAuth()
         .build()
 
     const document = SwaggerModule.createDocument(app, config)
@@ -20,7 +20,6 @@ async function bootstrap() {
 
     app.useGlobalPipes(new ValidationPipe())
     await app.listen(PORT)
-
 
 }
 

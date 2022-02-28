@@ -3,11 +3,19 @@ import { UniqueOnDatabase } from '../../auth/validations/UniqueValidation'
 import { UserEntity } from '../entities/user.entity'
 import { ApiProperty } from '@nestjs/swagger'
 
+const minLengthFullName = Number(process.env.MIN_LENGTH_FULLNAME) || 4
+const maxLengthFullName = Number(process.env.MAX_LENGTH_FULLNAME) || 50
+const minLengthPassword = Number(process.env.MIN_LENGTH_PASSWORD) || 6
+const maxLengthPassword = Number(process.env.MAX_LENGTH_PASSWORD) || 50
+
 export class CreateUserDto {
+
     @ApiProperty({example: 'Вася Пупкин', description: 'Имя пользователя'})
-    @Length(4, 50, {
+    @Length(minLengthFullName, maxLengthFullName, {
         message: (args: ValidationArguments) => {
-            if (!args.value) return 'Пароль обязателен'
+            if (!args.value) {
+                return 'Обязательное поле'
+            }
             if (args.value.length < args.constraints[0]) {
                 return `Имя должно быть не менее ${args.constraints[0]} символов`
             }
@@ -33,9 +41,11 @@ export class CreateUserDto {
     email: string
 
     @ApiProperty({example: '#dfQ&ds', description: 'Пароль'})
-    @Length(4, 30, {
+    @Length(minLengthPassword, maxLengthPassword, {
         message: (args: ValidationArguments) => {
-            if (!args.value) return 'Пароль обязателен'
+            if (!args.value) {
+                return 'Обязательное поле'
+            }
             if (args.value.length < args.constraints[0]) {
                 return `Пароль должен быть не менее ${args.constraints[0]} символов`
             }

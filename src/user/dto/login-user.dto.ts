@@ -1,9 +1,11 @@
-import { IsEmail, Length } from 'class-validator'
+import { IsEmail } from 'class-validator'
+import { ApiProperty } from '@nestjs/swagger'
 
 export class LoginUserDto {
-    @IsEmail(undefined, {message: 'Неверная почта'})
+    @ApiProperty({example: 'user@mail.ru', description: 'Почтовый адрес'})
+    @IsEmail(undefined, {message: 'Неверная формат почты'})
     email: string
 
-    @Length(6, 32, {message: 'Пароль должен минимум 6 символов'})
+    @ApiProperty({example: '#dfQ&ds', description: 'Пароль'})
     password?: string
 }
