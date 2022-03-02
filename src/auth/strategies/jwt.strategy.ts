@@ -4,6 +4,7 @@ import { ForbiddenException, Injectable } from '@nestjs/common'
 import { UserService } from '../../user/user.service'
 import { FORBIDDEN } from '../auth.constants'
 import { ConfigService } from '@nestjs/config'
+import { LoginUserDto } from '../../user/dto/login-user.dto'
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -18,11 +19,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         })
     }
 
-    async validate(payload: { sub: number; email: string }) {
-        const data = {id: payload.sub, email: payload.email}
-
-        const user = await this.userService.findByCond(data)
-
+    async validate({email}: Pick<LoginUserDto, 'email'>) {
+        const user = await this.userService.findByCond({email})
         if (!user) {
             throw new ForbiddenException(FORBIDDEN)
         }
