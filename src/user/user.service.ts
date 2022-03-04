@@ -7,38 +7,37 @@ import { Repository } from 'typeorm'
 import { LoginUserDto } from './dto/login-user.dto'
 import { SearchUserDto } from './dto/searchg-user.dto'
 
-// import { CommentEntity } from '../comment/entities/comment.entity'
 
 @Injectable()
 export class UserService {
     constructor(
         @InjectRepository(UserEntity)
-        private repository: Repository<UserEntity>,
+        private userRepository: Repository<UserEntity>,
     ) {
     }
 
     create(dto: CreateUserDto) {
-        return this.repository.save(dto)
+        return this.userRepository.save(dto)
     }
 
-    async findAll() {
-        return this.repository.find({select: ['id', 'fullName', 'email']})
+    findAll(): Promise<UserEntity[]> {
+        return this.userRepository.find({select: ['id', 'fullName', 'email']})
     }
 
     findById(id: number) {
-        return this.repository.findOne(id)
+        return this.userRepository.findOne(id)
     }
 
     findByCond(cond: LoginUserDto) {
-        return this.repository.findOne(cond)
+        return this.userRepository.findOne(cond)
     }
 
     update(id: number, dto: UpdateUserDto) {
-        return this.repository.update(id, dto)
+        return this.userRepository.update(id, dto)
     }
 
     async search(dto: SearchUserDto) {
-        const qb = this.repository.createQueryBuilder('u')
+        const qb = this.userRepository.createQueryBuilder('u')
 
         qb.limit(dto.limit || 0)
         qb.take(dto.take || 10)

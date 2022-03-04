@@ -36,7 +36,7 @@ export class CreateUserDto {
         }
     })
     @UniqueOnDatabase(UserEntity, {
-        message: 'Такая почта уже есть',
+        message: 'Ппользователь с таким емейлом уже был зарегистрирован',
     })
     email: string
 

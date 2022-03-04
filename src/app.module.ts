@@ -4,21 +4,18 @@ import { UserEntity } from './user/entities/user.entity'
 import { UserModule } from './user/user.module'
 import { AuthModule } from './auth/auth.module'
 import { ConfigModule } from '@nestjs/config'
+import * as Joi from 'joi'
 
 @Module({
     imports: [
-        // TypeOrmModule.forRoot({
-        //     type: 'postgres',
-        //     host: 'localhost',
-        //     port: 5432,
-        //     username: 'postgres',
-        //     password: '1234',
-        //     database: 'random_films',
-        //     entities: [UserEntity],
-        //     synchronize: true,
-        // }),
         ConfigModule.forRoot({
-            envFilePath: `.${process.env.NODE_ENV}.env`
+            envFilePath: `.${process.env.NODE_ENV}.env`,
+            validationSchema: Joi.object({
+                JWT_SECRET: Joi.string().required(),
+                JWT_EXPIRATION_TIME: Joi.string().required(),
+                JWT_REFRESH_TOKEN_SECRET: Joi.string().required(),
+                JWT_REFRESH_TOKEN_EXPIRATION_TIME: Joi.string().required(),
+            })
         }),
         TypeOrmModule.forRoot({
             type: 'postgres',
