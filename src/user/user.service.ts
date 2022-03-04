@@ -6,7 +6,7 @@ import { UserEntity } from './entities/user.entity'
 import { Repository } from 'typeorm'
 import { LoginUserDto } from './dto/login-user.dto'
 import { SearchUserDto } from './dto/searchg-user.dto'
-
+import * as bcrypt from 'bcryptjs'
 
 @Injectable()
 export class UserService {
@@ -18,6 +18,13 @@ export class UserService {
 
     create(dto: CreateUserDto) {
         return this.userRepository.save(dto)
+    }
+
+    async setCurrentRefreshToken(refreshToken: string, userId: number) {
+        const currentHashedRefreshToken = await bcrypt.hash(refreshToken, 10)
+        await this.userRepository.update(userId, {
+            currentHashedRefreshToken
+        })
     }
 
     findAll(): Promise<UserEntity[]> {

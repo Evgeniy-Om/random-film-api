@@ -1,13 +1,11 @@
-import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common'
+import { ForbiddenException, Injectable } from '@nestjs/common'
 import { UserService } from '../user/user.service'
-import { UserEntity } from '../user/entities/user.entity'
 import { JwtService } from '@nestjs/jwt'
 import { CreateUserDto } from '../user/dto/create-user.dto'
 import { RegisterResponse } from '../user/swagger/registerResponse'
 import * as bcrypt from 'bcryptjs'
-import { compare } from 'bcryptjs'
-import { USER_NOT_FOUND, WRONG_PASSWORD_ERROR } from './auth.constants'
 import { ConfigService } from '@nestjs/config'
+import TokenPayload from '../types/tokenPayload.interface'
 
 @Injectable()
 export class AuthService {
@@ -16,16 +14,6 @@ export class AuthService {
         private jwtService: JwtService,
         private readonly configService: ConfigService
     ) {
-    }
-
-    getCookieWithJwtToken(email: string) {
-        const token = this.jwtService.sign({email});
-        return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get('JWT_EXPIRATION_TIME')}`;
-    }
-
-    private generateJwtToken(data: { id: number; email: string }) {
-        const payload = {email: data.email, sub: data.id}
-        return this.jwtService.sign(payload)
     }
 
     async register(dto: CreateUserDto): Promise<RegisterResponse> {
@@ -39,24 +27,38 @@ export class AuthService {
             return {
                 email: createdUser.email,
                 fullName: createdUser.fullName,
-                token: this.generateJwtToken(createdUser),
+                // token: this.generateJwtToken(createdUser),
             }
+
         } catch (err) {
             throw new ForbiddenException('Ошибка при регистрации')
         }
     }
 
-    async validateUser(email: string, password: string): Promise<Pick<UserEntity, 'email'>> {
-        const user = await this.userService.findByCond({email})
-        if (!user) {
-            throw new UnauthorizedException(USER_NOT_FOUND)
-        }
+    getCookieWithJwtAccessToken(userId: number) {
+        const payload: TokenPayload = {userId}
+        const token = this.jwtService.sign(payload, {
+            secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET'),
+            expiresIn: `${this.configService.get('JWT_ACCESS_TOKEN_EXPIRATION_TIME')}s`
+        })
+        return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get('JWT_ACCESS_TOKEN_EXPIRATION_TIME')}`
+    }
 
-        const isCorrectPassword = await compare(password, user.password)
-        if (!isCorrectPassword) {
-            throw new UnauthorizedException(WRONG_PASSWORD_ERROR)
+    getCookieWithJwtRefreshToken(userId: number) {
+        const payload: TokenPayload = {userId}
+        const token = this.jwtService.sign(payload, {
+            secret: this.configService.get('JWT_REFRESH_TOKEN_SECRET'),
+            expiresIn: `${this.configService.get('JWT_REFRESH_TOKEN_EXPIRATION_TIME')}s`
+        })
+        const cookie = `Refresh=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get('JWT_REFRESH_TOKEN_EXPIRATION_TIME')}`
+        return {
+            cookie,
+            token
         }
-        return {email: user.email}
+    }
+
+    getCookieForLogOut() {
+        return `Authentication=; HttpOnly; Path=/; Max-Age=0`
     }
 
 }
