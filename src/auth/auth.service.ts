@@ -7,21 +7,25 @@ import { RegisterResponse } from '../user/swagger/registerResponse'
 import * as bcrypt from 'bcryptjs'
 import { compare } from 'bcryptjs'
 import { USER_NOT_FOUND, WRONG_PASSWORD_ERROR } from './auth.constants'
+import { ConfigService } from '@nestjs/config'
 
 @Injectable()
 export class AuthService {
     constructor(
         private userService: UserService,
         private jwtService: JwtService,
+        private readonly configService: ConfigService
     ) {
     }
 
-    async login(user: UserEntity) {
-        const {password, ...userData} = user
-        return {
-            ...userData,
-            token: this.generateJwtToken(userData),
-        }
+    getCookieWithJwtToken(email: string) {
+        const token = this.jwtService.sign({email});
+        return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get('JWT_EXPIRATION_TIME')}`;
+    }
+
+    private generateJwtToken(data: { id: number; email: string }) {
+        const payload = {email: data.email, sub: data.id}
+        return this.jwtService.sign(payload)
     }
 
     async register(dto: CreateUserDto): Promise<RegisterResponse> {
@@ -55,8 +59,4 @@ export class AuthService {
         return {email: user.email}
     }
 
-    private generateJwtToken(data: { id: number; email: string }) {
-        const payload = {email: data.email, sub: data.id}
-        return this.jwtService.sign(payload)
-    }
 }
