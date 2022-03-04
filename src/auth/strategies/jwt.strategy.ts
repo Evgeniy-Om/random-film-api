@@ -18,15 +18,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
             // ignoreExpiration: false,
             jwtFromRequest: ExtractJwt.fromExtractors([(request: Request) => {
                 if (!request?.cookies?.Authentication) {
-                    throw new ForbiddenException("Срок действия access токена истёк. Перелогиньтесь")
+                    throw new ForbiddenException("Срок действия access-токена истёк. Перелогиньтесь")
                 }
                 return request?.cookies?.Authentication
             }]),
-            secretOrKey: configService.get('JWT_SECRET')
+            secretOrKey: configService.get('JWT_ACCESS_TOKEN_SECRET')
         })
     }
 
     async validate({email}: Pick<LoginUserDto, 'email'>) {
+
         const user = await this.userService.findByCond({email})
         if (!user) {
             throw new ForbiddenException(FORBIDDEN)
