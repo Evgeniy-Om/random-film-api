@@ -3,6 +3,9 @@ import { UserService } from './user.service'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
 import { SearchUserDto } from './dto/searchg-user.dto'
+import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger'
+import { UserEntity } from './entities/user.entity'
+import { GetProfileRequest } from './swagger/getProfileRequest'
 
 @Controller('users')
 export class UserController {
@@ -10,18 +13,23 @@ export class UserController {
     }
 
     @Get()
-    findAll() {
+    @ApiOperation({summary: 'Получение всех пользователей'})
+    @ApiResponse({status: 200, type: [UserEntity]})
+    findAll(): Promise<UserEntity[]> {
         return this.userService.findAll()
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get('me')
+    @ApiOperation({summary: 'Получение данные о своём профиле'})
+    @ApiBody({type: GetProfileRequest})
+    @ApiResponse({status: 200, type: UserEntity})
+    @UseGuards(JwtAuthGuard)
     getProfile(@Request() req) {
         return this.userService.findById(req.user.id)
     }
 
-    @UseGuards(JwtAuthGuard)
     @Patch('me')
+    @UseGuards(JwtAuthGuard)
     update(@Request() req, @Body() updateUserDto: UpdateUserDto) {
         return this.userService.update(+req.user.id, updateUserDto)
     }
