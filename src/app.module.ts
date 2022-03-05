@@ -27,8 +27,9 @@ import * as Joi from 'joi'
             entities: [UserEntity],
             // synchronize: process.env.NODE_ENV === 'development',
         }),
+        AuthModule,
         UserModule,
-        AuthModule
+
     ],
     controllers: [],
     providers: [],

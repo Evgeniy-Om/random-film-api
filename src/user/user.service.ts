@@ -27,6 +27,25 @@ export class UserService {
         })
     }
 
+    async getUserIfRefreshTokenMatches(refreshToken: string, userId: number) {
+        const user = await this.findById(userId)
+
+        const isRefreshTokenMatching = await bcrypt.compare(
+            refreshToken,
+            user.currentHashedRefreshToken
+        )
+
+        if (isRefreshTokenMatching) {
+            return user
+        }
+    }
+
+    async removeRefreshToken(userId: number) {
+        return this.userRepository.update(userId, {
+            currentHashedRefreshToken: null
+        });
+    }
+
     findAll(): Promise<UserEntity[]> {
         return this.userRepository.find({select: ['id', 'fullName', 'email']})
     }

@@ -9,10 +9,10 @@ async function bootstrap() {
     const app = await NestFactory.create(AppModule)
 
     const config = new DocumentBuilder()
-        .setTitle('Backend геренатора фильмов')
+        .setTitle('API геренатора случайных фильмов')
         .setDescription('Документация REST API')
         .setVersion('1.0.0')
-        .addTag('Om')
+        // .addTag('Om')
         .addBearerAuth()
         .build()
 

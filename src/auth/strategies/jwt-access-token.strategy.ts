@@ -8,14 +8,12 @@ import { Request } from 'express'
 import TokenPayload from '../../types/tokenPayload.interface'
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class JwtAccessTokenStrategy extends PassportStrategy(Strategy, 'jwt-access-token') {
     constructor(
         private readonly userService: UserService,
         private readonly configService: ConfigService
     ) {
         super({
-            // jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-            // ignoreExpiration: false,
             jwtFromRequest: ExtractJwt.fromExtractors([(request: Request) => {
                 if (!request?.cookies?.Authentication) {
                     throw new ForbiddenException('Срок действия access-токена истёк. Перелогиньтесь')
@@ -25,7 +23,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
             secretOrKey: configService.get('JWT_ACCESS_TOKEN_SECRET')
         })
     }
-    
+
     async validate(payload: TokenPayload) {
         const user = await this.userService.findById(payload.userId)
         if (!user) {

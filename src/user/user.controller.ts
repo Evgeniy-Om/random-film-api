@@ -3,11 +3,12 @@ import { UserService } from './user.service'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
 import { SearchUserDto } from './dto/searchg-user.dto'
-import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger'
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { UserEntity } from './entities/user.entity'
 import { GetProfileRequest } from './swagger/getProfileRequest'
 
 @Controller('users')
+@ApiTags('Пользователи')
 export class UserController {
     constructor(private readonly userService: UserService) {
     }
