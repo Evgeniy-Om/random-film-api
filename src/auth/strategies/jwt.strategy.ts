@@ -4,8 +4,8 @@ import { ForbiddenException, Injectable } from '@nestjs/common'
 import { UserService } from '../../user/user.service'
 import { FORBIDDEN } from '../auth.constants'
 import { ConfigService } from '@nestjs/config'
-import { LoginUserDto } from '../../user/dto/login-user.dto'
 import { Request } from 'express'
+import TokenPayload from '../../types/tokenPayload.interface'
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -18,17 +18,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
             // ignoreExpiration: false,
             jwtFromRequest: ExtractJwt.fromExtractors([(request: Request) => {
                 if (!request?.cookies?.Authentication) {
-                    throw new ForbiddenException("Срок действия access-токена истёк. Перелогиньтесь")
+                    throw new ForbiddenException('Срок действия access-токена истёк. Перелогиньтесь')
                 }
                 return request?.cookies?.Authentication
             }]),
             secretOrKey: configService.get('JWT_ACCESS_TOKEN_SECRET')
         })
     }
-
-    async validate({email}: Pick<LoginUserDto, 'email'>) {
-
-        const user = await this.userService.findByCond({email})
+    
+    async validate(payload: TokenPayload) {
+        const user = await this.userService.findById(payload.userId)
         if (!user) {
             throw new ForbiddenException(FORBIDDEN)
         }
