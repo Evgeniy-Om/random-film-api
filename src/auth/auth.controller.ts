@@ -1,11 +1,11 @@
 import {
     Body,
     ClassSerializerInterceptor,
-    Controller, Get,
+    Controller,
+    Get,
     HttpCode,
     Post,
     Req,
-    Res,
     UseGuards,
     UseInterceptors,
 } from '@nestjs/common'
@@ -16,7 +16,6 @@ import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { RegisterResponse } from '../user/swagger/registerResponse'
 import { LoginResponse } from '../user/swagger/loginResponse'
 import { LoginUserDto } from '../user/dto/login-user.dto'
-import { Response } from 'express'
 import { JwtAuthGuard } from './guards/jwt-auth.guard'
 import RequestWithUser from '../types/requestWithUser.interface'
 import { UserService } from '../user/user.service'
@@ -59,27 +58,22 @@ export class AuthController {
         return this.authService.register(dto)
     }
 
-    // @UseGuards(JwtAuthGuard)
-    // @Post('logout')
-    // async logOut(@Req() request: RequestWithUser, @Res() response: Response) {
-    //     response.setHeader('Set-Cookie', this.authService.getCookieForLogOut())
-    //     return response.sendStatus(200)
-    // }
-
     @UseGuards(JwtAuthGuard)
     @Post('logout')
+    @ApiOperation({summary: 'Выход из системы'})
     @HttpCode(200)
     async logOut(@Req() request: RequestWithUser) {
-        await this.userService.removeRefreshToken(request.user.id);
-        request.res.setHeader('Set-Cookie', this.authService.getCookiesForLogOut());
+        await this.userService.removeRefreshToken(request.user.id)
+        request.res.setHeader('Set-Cookie', this.authService.getCookiesForLogOut())
     }
 
     @UseGuards(JwtRefreshGuard)
     @Get('refresh')
+    @ApiOperation({summary: 'Обновление Access-токена и запись в cookie'})
     refresh(@Req() request: RequestWithUser) {
-        const accessTokenCookie = this.authService.getCookieWithJwtAccessToken(request.user.id);
+        const accessTokenCookie = this.authService.getCookieWithJwtAccessToken(request.user.id)
 
-        request.res.setHeader('Set-Cookie', accessTokenCookie);
-        return request.user;
+        request.res.setHeader('Set-Cookie', accessTokenCookie)
+        return 'ОК'
     }
 }

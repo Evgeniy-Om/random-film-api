@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
 import { ValidationPipe } from '@nestjs/common'
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+import { DocumentBuilder, SwaggerCustomOptions, SwaggerModule } from '@nestjs/swagger'
 import * as cookieParser from 'cookie-parser'
 
 async function bootstrap() {
@@ -12,12 +12,17 @@ async function bootstrap() {
         .setTitle('API геренатора случайных фильмов')
         .setDescription('Документация REST API')
         .setVersion('1.0.0')
-        // .addTag('Om')
-        .addBearerAuth()
+        // .addCookieAuth('Refresh')
         .build()
 
+    const customOptions: SwaggerCustomOptions = {
+        swaggerOptions: {
+            withCredentials: true,
+        },
+    };
+
     const document = SwaggerModule.createDocument(app, config)
-    SwaggerModule.setup('/api', app, document)
+    SwaggerModule.setup('/api', app, document, customOptions)
 
     app.use(cookieParser())
 

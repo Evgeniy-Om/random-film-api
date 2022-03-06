@@ -3,9 +3,8 @@ import { UserService } from './user.service'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
 import { SearchUserDto } from './dto/searchg-user.dto'
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { UserEntity } from './entities/user.entity'
-import { GetProfileRequest } from './swagger/getProfileRequest'
 
 @Controller('users')
 @ApiTags('Пользователи')
@@ -22,7 +21,6 @@ export class UserController {
 
     @Get('me')
     @ApiOperation({summary: 'Получение данные о своём профиле'})
-    @ApiBody({type: GetProfileRequest})
     @ApiResponse({status: 200, type: UserEntity})
     @UseGuards(JwtAuthGuard)
     getProfile(@Request() req) {
