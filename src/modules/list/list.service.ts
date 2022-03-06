@@ -49,24 +49,20 @@ export default class ListService {
     }
 
     async createList(list: { name: string, userId: number }) {
-        console.log(list)
         const isDuplicateList = await this.listRepository.findOne({
             where: {
+                // TODO избавиться от повторений кода здесь и в return
                 name: list.name,
                 user: {id: list.userId}
             }
         })
-//         const isDuplicateList = await this.listRepository.query(
-//             `SELECT id
-//                    FROM list
-//                    WHERE 'name' = ${list.name} AND 'userId' = ${list.name}
-// `
-//         )
-        console.log(isDuplicateList)
         if (isDuplicateList) {
             throw new DuplicateNameListException(list.name)
         }
-        return this.listRepository.save({name: list.name, user: {id: list.userId}})
+        return this.listRepository.save({
+            name: list.name,
+            user: {id: list.userId}
+        })
     }
 
     async updateList(id: number, list: UpdateListDto): Promise<ListEntity> {

@@ -38,8 +38,8 @@ export default class ListController {
 
     @Post()
     @UseGuards(JwtAuthGuard)
-    async createList(@Request() req: RequestWithUser, @Body() list: CreateListDto) {
-        const payload = {...list, userId: req.user.id}
+    async createList(@Request() req: RequestWithUser, @Body() {name}: CreateListDto) {
+        const payload = {name, userId: req.user.id}
         return this.listService.createList(payload)
     }
 
