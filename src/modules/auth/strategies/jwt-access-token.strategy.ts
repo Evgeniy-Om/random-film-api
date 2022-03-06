@@ -5,7 +5,7 @@ import { UserService } from '../../user/user.service'
 import { FORBIDDEN } from '../auth.constants'
 import { ConfigService } from '@nestjs/config'
 import { Request } from 'express'
-import TokenPayload from '../../types/tokenPayload.interface'
+import TokenPayload from '../../../types/tokenPayload.interface'
 
 @Injectable()
 export class JwtAccessTokenStrategy extends PassportStrategy(Strategy, 'jwt-access-token') {

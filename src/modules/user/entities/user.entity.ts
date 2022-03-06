@@ -1,6 +1,7 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, } from 'typeorm'
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn, } from 'typeorm'
 import { ApiProperty } from '@nestjs/swagger'
 import { Exclude } from 'class-transformer'
+import { ListEntity } from '../../list/entities/list.entity'
 // import { CommentEntity } from '../../comment/entities/comment.entity'
 // import { PostEntity } from '../../post/entities/post.entity'
 
@@ -20,26 +21,20 @@ export class UserEntity {
     @ApiProperty({example: 'user@mail.ru', description: 'Почтовый адрес'})
     email: string
 
-    // @OneToMany(() => CommentEntity, (comment) => comment.user, {
-    //   eager: false,
-    //   nullable: true,
-    // })
-    // comments: CommentEntity[];
-    //
-    // @OneToMany(() => PostEntity, (post) => post.user, {
-    //   eager: false,
-    //   nullable: true,
-    // })
-    // posts: PostEntity[];
-
     @Column({nullable: true})
-    password?: string
+    password?: string // TODO: Исправить на passwordHash
 
     @Column({
         nullable: true
     })
     @Exclude()
     currentHashedRefreshToken?: string
+
+    @OneToMany(() => ListEntity, (list) => list.user, {
+        eager: false,
+        nullable: true,
+    })
+    lists: ListEntity[];
 
     @ApiProperty({example: '2022-03-02T13:14:13.617Z', description: 'Дата создания профиля'})
     @CreateDateColumn({type: 'timestamp'})

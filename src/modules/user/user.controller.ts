@@ -1,10 +1,11 @@
 import { Body, Controller, Get, Param, Patch, Query, Request, UseGuards, } from '@nestjs/common'
 import { UserService } from './user.service'
-import { UpdateUserDto } from './dto/update-user.dto'
+import { UpdateUserDto } from './dto/updateUser.dto'
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
-import { SearchUserDto } from './dto/searchg-user.dto'
+import { SearchUserDto } from './dto/searchgUser.dto'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { UserEntity } from './entities/user.entity'
+import RequestWithUser from '../../types/requestWithUser.interface'
 
 @Controller('users')
 @ApiTags('Пользователи')
@@ -29,7 +30,7 @@ export class UserController {
 
     @Patch('me')
     @UseGuards(JwtAuthGuard)
-    update(@Request() req, @Body() updateUserDto: UpdateUserDto) {
+    update(@Request() req: RequestWithUser, @Body() updateUserDto: UpdateUserDto) {
         return this.userService.update(+req.user.id, updateUserDto)
     }
 
