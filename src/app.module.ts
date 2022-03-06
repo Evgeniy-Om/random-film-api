@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config'
 import * as Joi from 'joi'
 import { ListModule } from './modules/list/list.module'
 import { ListEntity } from './modules/list/entities/list.entity'
+import { FilmModule } from './modules/film/film.module';
 
 @Module({
     imports: [
@@ -31,7 +32,8 @@ import { ListEntity } from './modules/list/entities/list.entity'
         }),
         AuthModule,
         UserModule,
-        ListModule
+        ListModule,
+        FilmModule
 
     ],
     controllers: [],

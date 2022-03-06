@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Param, Patch, Query, Request, UseGuards, } from '@nestjs/common'
 import { UserService } from './user.service'
-import { UpdateUserDto } from './dto/updateUser.dto'
+import { UpdateUserDto } from './dto/update-user.dto'
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
-import { SearchUserDto } from './dto/searchgUser.dto'
+import { SearchUserDto } from './dto/search-user.dto'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { UserEntity } from './entities/user.entity'
 import RequestWithUser from '../../types/requestWithUser.interface'
@@ -24,7 +24,7 @@ export class UserController {
     @ApiOperation({summary: 'Получение данные о своём профиле'})
     @ApiResponse({status: 200, type: UserEntity})
     @UseGuards(JwtAuthGuard)
-    getProfile(@Request() req) {
+    getProfile(@Request() req: RequestWithUser) {
         return this.userService.findById(req.user.id)
     }
 

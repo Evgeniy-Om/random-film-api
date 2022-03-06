@@ -11,13 +11,15 @@ import {
     UseInterceptors,
 } from '@nestjs/common'
 import ListService from './list.service'
-import CreateListDto from './dto/createList.dto'
-import UpdateListDto from './dto/updateList.dto'
+import CreateListDto from './dto/create-list.dto'
+import UpdateListDto from './dto/update-list.dto'
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
 import FindOneParams from '../../utils/FindOneParams'
 import RequestWithUser from '../../types/requestWithUser.interface'
+import { ApiTags } from '@nestjs/swagger'
 
 @Controller('lists')
+@ApiTags('Списки избранных фильмов')
 @UseInterceptors(ClassSerializerInterceptor)
 @UseGuards(JwtAuthGuard)
 export default class ListController {
@@ -38,8 +40,8 @@ export default class ListController {
 
     @Post()
     @UseGuards(JwtAuthGuard)
-    async createList(@Request() req: RequestWithUser, @Body() list: CreateListDto) {
-        const payload = {...list, userId: req.user.id}
+    async createList(@Request() req: RequestWithUser, @Body() {name}: CreateListDto) {
+        const payload = {name, userId: req.user.id}
         return this.listService.createList(payload)
     }
 

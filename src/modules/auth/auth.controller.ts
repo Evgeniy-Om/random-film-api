@@ -11,11 +11,11 @@ import {
 } from '@nestjs/common'
 import { AuthService } from './auth.service'
 import { LocalAuthGuard } from './guards/local-auth.guard'
-import { CreateUserDto } from '../user/dto/createUser.dto'
+import { CreateUserDto } from '../user/dto/create-user.dto'
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
-import { RegisterResponse } from '../user/swagger/registerResponse'
-import { LoginResponse } from '../user/swagger/loginResponse'
-import { LoginUserDto } from '../user/dto/loginUser.dto'
+import { RegisterResponse } from './swagger/registerResponse'
+import { LoginResponse } from './swagger/loginResponse'
+import { LoginUserDto } from '../user/dto/login-user.dto'
 import { JwtAuthGuard } from './guards/jwt-auth.guard'
 import RequestWithUser from '../../types/requestWithUser.interface'
 import { UserService } from '../user/user.service'
@@ -59,12 +59,13 @@ export class AuthController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Post('logout')
+    @Get('logout')
     @ApiOperation({summary: 'Выход из системы'})
     @HttpCode(200)
     async logOut(@Req() request: RequestWithUser) {
         await this.userService.removeRefreshToken(request.user.id)
         request.res.setHeader('Set-Cookie', this.authService.getCookiesForLogOut())
+        return "ОК"
     }
 
     @UseGuards(JwtRefreshGuard)
