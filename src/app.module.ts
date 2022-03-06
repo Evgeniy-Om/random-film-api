@@ -8,6 +8,9 @@ import * as Joi from 'joi'
 import { ListModule } from './modules/list/list.module'
 import { ListEntity } from './modules/list/entities/list.entity'
 import { FilmModule } from './modules/film/film.module';
+import { FilmEntity } from './modules/film/entities/film.entity'
+import { CountryEntity } from './modules/film/entities/country.entity'
+import { GenreEntity } from './modules/film/entities/genre.entity'
 
 @Module({
     imports: [
@@ -27,7 +30,7 @@ import { FilmModule } from './modules/film/film.module';
             username: process.env.POSTGRES_USER,
             password: String(process.env.POSTGRES_PASSWORD),
             database: process.env.POSTGRES_DB,
-            entities: [UserEntity, ListEntity],
+            entities: [UserEntity, ListEntity, FilmEntity, CountryEntity, GenreEntity],
             synchronize: process.env.NODE_ENV === 'development',
         }),
         AuthModule,
