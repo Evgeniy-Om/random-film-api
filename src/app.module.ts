@@ -1,10 +1,12 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { UserEntity } from './user/entities/user.entity'
-import { UserModule } from './user/user.module'
-import { AuthModule } from './auth/auth.module'
+import { UserEntity } from './modules/user/entities/user.entity'
+import { UserModule } from './modules/user/user.module'
+import { AuthModule } from './modules/auth/auth.module'
 import { ConfigModule } from '@nestjs/config'
 import * as Joi from 'joi'
+import { ListModule } from './modules/list/list.module'
+import { ListEntity } from './modules/list/entities/list.entity'
 
 @Module({
     imports: [
@@ -24,11 +26,12 @@ import * as Joi from 'joi'
             username: process.env.POSTGRES_USER,
             password: String(process.env.POSTGRES_PASSWORD),
             database: process.env.POSTGRES_DB,
-            entities: [UserEntity],
-            // synchronize: process.env.NODE_ENV === 'development',
+            entities: [UserEntity, ListEntity],
+            synchronize: process.env.NODE_ENV === 'development',
         }),
         AuthModule,
         UserModule,
+        ListModule
 
     ],
     controllers: [],

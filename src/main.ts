@@ -12,7 +12,6 @@ async function bootstrap() {
         .setTitle('API геренатора случайных фильмов')
         .setDescription('Документация REST API')
         .setVersion('1.0.0')
-        // .addCookieAuth('Refresh')
         .build()
 
     const customOptions: SwaggerCustomOptions = {
