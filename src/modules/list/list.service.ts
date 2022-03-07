@@ -20,17 +20,12 @@ export default class ListService {
     }
 
     async findListById(id: number): Promise<ListEntity> {
-        const list = await this.listRepository.findOne(
-            id,
-            {
-                relations: ['list'],
-                withDeleted: true
-            }
-        )
-        if (list) {
-            return list
+        const list = await this.listRepository.findOne(id, {relations: ["films"]})
+        if (!list) {
+            throw new ListNotFoundException(id)
         }
-        throw new ListNotFoundException(id)
+        return list
+
     }
 
     async findListByName(name: string): Promise<boolean> {

@@ -15,7 +15,7 @@ export class ListEntity {
 
     @ManyToMany(() => FilmEntity)
     @JoinTable({name: 'lists_films'})
-    lists: FilmEntity[]
+    films: FilmEntity[]
 
     @DeleteDateColumn()
     deletedAt: Date

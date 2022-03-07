@@ -1,37 +1,43 @@
-import { Injectable } from '@nestjs/common';
-import { AddFilmToListDto } from './dto/add-film-to-list.dto';
-import { UpdateFilmDto } from './dto/update-film.dto';
+import { Injectable } from '@nestjs/common'
+import { AddFilmToListDto } from './dto/add-film-to-list.dto'
+import { UpdateFilmDto } from './dto/update-film.dto'
 import { Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
 import { FilmEntity } from './entities/film.entity'
+import ListService from '../list/list.service'
 
 @Injectable()
 export class FilmService {
-  constructor(
-      @InjectRepository(FilmEntity)
-      private filmRepository: Repository<FilmEntity>,
-  ) {}
+    constructor(
+        @InjectRepository(FilmEntity)
+        private readonly filmRepository: Repository<FilmEntity>,
+        private readonly listService: ListService
+    ) {
+    }
 
-  addToList(addFilmToListDto: AddFilmToListDto) {
-    // return this.filmRepository.save({
-    //   id: addFilmToListDto.listId,
-    //   lists: {id: addFilmToListDto.listId}
-    // });
-  }
+    async addToList(addFilmToListDto: AddFilmToListDto) {
+        console.log(addFilmToListDto)
+        let film = await this.filmRepository.findOne(addFilmToListDto.filmId)
+        const list = await this.listService.findListById(addFilmToListDto.listId)
 
-  findAll() {
-    return `This action returns all film`;
-  }
+        film.lists = [list]
 
-  findOne(id: number) {
-    return `This action returns a #${id} film`;
-  }
+        return this.filmRepository.save(film)
+    }
 
-  update(id: number, updateFilmDto: UpdateFilmDto) {
-    return `This action updates a #${id} film`;
-  }
+    findAll() {
+        return `This action returns all film`
+    }
 
-  remove(id: number) {
-    return `This action removes a #${id} film`;
-  }
+    findOne(id: number) {
+        return `This action returns a #${id} film`
+    }
+
+    update(id: number, updateFilmDto: UpdateFilmDto) {
+        return `This action updates a #${id} film`
+    }
+
+    remove(id: number) {
+        return `This action removes a #${id} film`
+    }
 }
