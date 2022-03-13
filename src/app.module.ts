@@ -31,7 +31,7 @@ import { GenreEntity } from './modules/film/entities/genre.entity'
             password: String(process.env.POSTGRES_PASSWORD),
             database: process.env.POSTGRES_DB,
             entities: [UserEntity, ListEntity, FilmEntity, CountryEntity, GenreEntity],
-            synchronize: process.env.NODE_ENV === 'development',
+            // synchronize: process.env.NODE_ENV === 'development',
         }),
         AuthModule,
         UserModule,

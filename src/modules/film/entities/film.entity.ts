@@ -27,11 +27,11 @@ export class FilmEntity {
     @Column({type: 'numeric'})
     popularity: number
 
-    @Column({nullable: true, default: null})
-    poster_path: string
-
     @Column()
     release_date: Date
+
+    @Column({nullable: true, default: null})
+    poster_path: string
 
     @Column({type: 'numeric'})
     vote_average: number
